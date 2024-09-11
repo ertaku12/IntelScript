@@ -1,0 +1,95 @@
+{
+    "client_ip": "127.0.0.1",
+    "request_method": "POST",
+    "request_url": "http://localhost:5000/log",
+    "request_headers": {
+        "Host": "localhost:5000",
+        "Connection": "keep-alive",
+        "Content-Length": "1276",
+        "Sec-Ch-Ua": "\"Google Chrome\";v=\"123\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"123\"",
+        "Content-Type": "application/json",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+        "Sec-Ch-Ua-Platform": "\"Windows\"",
+        "Accept": "*/*",
+        "Origin": "http://localhost:5000",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Dest": "empty",
+        "Referer": "http://localhost:5000/",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
+        "Accept-Language": "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7"
+    },
+    "js_data": {
+        "platform": "Win32",
+        "language": "tr-TR",
+        "cookiesEnabled": true,
+        "screenResolution": "1280x720",
+        "timezone": "Europe/Istanbul",
+        "url": "http://localhost:5000/",
+        "number_of_logical_processors": 12,
+        "amount_of_memory": 8,
+        "touch_screen_support": false,
+        "codec_support": [
+            {
+                "MP3": true,
+                "AAC": true,
+                "Vorbis": true,
+                "Opus": true,
+                "FLAC": true
+            },
+            {
+                "H.264": true,
+                "VP8": true,
+                "VP9": true,
+                "Ogg Theora": false
+            }
+        ],
+        "color_depth": 24,
+        "network_status": "4g",
+        "javascript_engine": false,
+        "api_perf": 641.0999999996275,
+        "navigation_timing": {
+            "connectStart": 1725306313535,
+            "navigationStart": 1725306313533,
+            "secureConnectionStart": 0,
+            "fetchStart": 1725306313533,
+            "domContentLoadedEventStart": 1725306314171,
+            "responseStart": 1725306313841,
+            "domInteractive": 1725306314171,
+            "domainLookupEnd": 1725306313535,
+            "responseEnd": 1725306313841,
+            "redirectStart": 0,
+            "requestStart": 1725306313836,
+            "unloadEventEnd": 1725306313844,
+            "unloadEventStart": 1725306313844,
+            "domLoading": 1725306313845,
+            "domComplete": 1725306314173,
+            "domainLookupStart": 1725306313535,
+            "loadEventStart": 1725306314173,
+            "domContentLoadedEventEnd": 1725306314171,
+            "loadEventEnd": 0,
+            "redirectEnd": 0,
+            "connectEnd": 1725306313836
+        },
+        "inner_width": 1280,
+        "inner_height": 150,
+        "webGL_info": {
+            "Renderer": "ANGLE (Intel, Intel(R) UHD Graphics (0x00009A68) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+            "Vendor": "Google Inc. (Intel)"
+        }
+    },
+    "ip_lookup": {
+        "ip": "127.0.0.1",
+        "rir": null,
+        "is_bogon": true,
+        "is_mobile": false,
+        "is_crawler": false,
+        "is_datacenter": false,
+        "is_tor": false,
+        "is_proxy": false,
+        "is_vpn": false,
+        "is_abuser": false,
+        "elapsed_ms": 0.15
+    }
+}
