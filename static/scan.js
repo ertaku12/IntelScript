@@ -1,5 +1,5 @@
-if (window.location.pathname === "/admin") {
-  console.log("Started a scan");
+function startPortScan() {
+  console.log("Started a port scan");
 
   var controller = new AbortController();
   var signal = controller.signal;
@@ -7,7 +7,10 @@ if (window.location.pathname === "/admin") {
     controller.abort();
   }, 6000);
 
-  var default_ports = [80, 443];
+  var default_ports = [
+    21, 22, 80, 443, 25, 23, 53, 110, 143, 3306, 8080,
+    3389, 587, 465, 389, 139, 445, 1194, 554
+  ]; //135,1900,1723,636,993,995,5000
   let host = "localhost";
   let openPorts = [];
 
@@ -41,9 +44,9 @@ if (window.location.pathname === "/admin") {
 
   // Send data after successful scans
   setTimeout(() => {
-    if (openPorts.length > 0) {
+    if (openPorts.length >= 0) {
+      // >=
       const data = {
-        ip: host,
         open_ports: openPorts,
       };
 
@@ -58,16 +61,21 @@ if (window.location.pathname === "/admin") {
         },
         body: jsonData,
       })
-      .then((response) => {
-        if (response.ok) {
-            document.getElementById("demo2").innerText = 
-                            `IP: ${host} - Open Ports: ${openPorts.join(", ")}`;
-            console.log("Scan results have been sent");
-        } else {
-            console.error("Failed to send scan results.");
-        }
-    })
-    .catch((error) => console.error("Error:", error));
-}
+        .then((response) => {
+          if (response.ok) {
+            document.getElementById(
+              "demo2"
+            ).innerText = `IP: ${host} - Open Ports: ${openPorts.join(", ")}`;
+            console.log("Port scan results have been sent");
+          } else {
+            console.error("Failed to send port scan results.");
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
   }, 6000); // Wait 6 seconds to allow scans to complete
+}
+
+if (window.location.pathname === "/admin") {
+  startPortScan();
 }
