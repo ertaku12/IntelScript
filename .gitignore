@@ -1,5 +1,5 @@
 #custom
-.vscode/
+.vscode/*
 tempCodeRunnerFile.py
 
 # Byte-compiled / optimized / DLL files
