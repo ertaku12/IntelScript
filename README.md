@@ -3,7 +3,9 @@
    - Port scanning
    - Keylogging
    - Clipboard access
-   - Location
+   - Geographical Location
+
+     
      all sent to server.
 
 
