@@ -5,9 +5,6 @@
    - Clipboard access
    - Geographical Location
 
-     
-     all sent to server.
-
 
 # Execution Instructions
 
