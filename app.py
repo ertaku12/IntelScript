@@ -3,8 +3,8 @@ import json
 import requests
 import os
 
-ip_set_for_log = set()
-ip_set_for_portscan = set()
+ip_set_for_log = set() #don't save more than one
+ip_set_for_portscan = set() #don't save more than one
 
 
 app = Flask(__name__)
