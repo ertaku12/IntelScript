@@ -1,9 +1,9 @@
 # Capabilities
-   - Logging everything as much as JS does
-   - Port scanning
-   - Keylogging
-   - Clipboard access
-   - Geographical Location
+   - Logging everything as much as JS does (see logs/logs.json)
+   - Port scanning (see logs/scan.json)
+   - Keylogging (see logs/keylogger.json)
+   - Clipboard access (see logs/clipboard.json)
+   - Geographical Location (see logs/geolocation.json)
 
 
 # Execution Instructions
